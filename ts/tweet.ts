@@ -19,6 +19,9 @@ class Tweet {
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
         //TODO: identify whether the tweet is written
+        if (this.text.includes(" - ")) {
+            return true;
+        };
         return false;
     }
 
@@ -35,15 +38,24 @@ class Tweet {
             return "unknown";
         }
         //TODO: parse the activity type from the text of the tweet
-        return "";
+        let splitted = this.text.split(" ");
+        if (!parseFloat(splitted[3])) {
+            return splitted[3];
+        }
+        return splitted[5];
     }
 
     get distance():number {
         if(this.source != 'completed_event') {
             return 0;
         }
-        //TODO: prase the distance from the text of the tweet
-        return 0;
+        //TODO: parse the distance from the text of the tweet
+        let splitted = this.text.split(" ");
+        let dist = parseFloat(splitted[3]);
+        if (splitted[4] == "km") {
+            dist = dist / 1.609;
+        }
+        return dist;
     }
 
     getHTMLTableRow(rowNumber:number):string {

@@ -9,6 +9,8 @@ function parseTweets(runkeeper_tweets) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
 
+	stripped_texts = [];
+
 	//sorted_tweets = tweet_array.sort((a, b) => a.time - b.time);
 
 	const options = {
@@ -30,12 +32,18 @@ function parseTweets(runkeeper_tweets) {
 	live_sum = 0;
 	achieve_sum = 0;
 	misc_sum = 0;
+	written_sum = 0
+	// go by if it has a dash - then it's user written
 	for (const twt of tweet_array) {
+		if (twt.written) {written_sum += 1;}
 		if (twt.source == "completed_event") {completed_sum += 1;}
 		else if (twt.source == "live_event") {live_sum += 1;}
 		else if (twt.source == "achievement") {achieve_sum += 1;}
-		else {misc_sum += 1;}
+		else {misc_sum += 1;
+			// console.log(twt.text);
+		}
 	}
+	console.log(stripped_texts);
 
 	document.getElementsByClassName("completedEvents")[0].innerText = completed_sum;
 	document.getElementsByClassName("completedEvents")[1].innerText = completed_sum;
@@ -47,9 +55,19 @@ function parseTweets(runkeeper_tweets) {
 	document.getElementsByClassName("miscellaneous")[0].innerText = misc_sum;
 	document.getElementsByClassName("miscellaneousPct")[0].innerText = math.format((misc_sum/tweet_array.length)*100, {notation: 'fixed', precision: 2}) + "%";
 
+	document.getElementsByClassName("written")[0].innerText = written_sum;
+	document.getElementsByClassName("writtenPct")[0].innerText = math.format((written_sum/tweet_array.length)*100, {notation: 'fixed', precision: 2}) + "%";
+
+
 
 
 }	
+
+function strip_tweet(text) {
+		new_text = text.replace("#Runkeeper", '');
+		new_text = new_text.replace(/(?:https?):\/\/[\n\S]+/g, '');
+		return new_text;
+}
 
 //Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function (event) {

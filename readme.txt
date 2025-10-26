@@ -1,4 +1,4 @@
---Readme document for *Crystal Popeney*, *popeneyc@uci.edu*--
+--Readme document for Crystal Popeney, popeneyc@uci.edu--
 
 1. How many assignment points do you believe you completed (replace the *'s with your numbers)?
 
@@ -14,7 +14,8 @@
 3. What online resources did you consult when completing this assignment? (list sites like StackOverflow or specific URLs for tutorials; describe queries to Generative AI or use of AI-based code completion)
     Date formatting: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
     Removing text from a string: https://www.geeksforgeeks.org/javascript/how-to-remove-text-from-a-string-in-javascript/
-
+    Remove URL from a string: https://stackoverflow.com/questions/23571013/how-to-remove-url-from-a-string-completely-in-javascript
+    
 
 4. What classmates or other individuals did you consult as part of this assignment? What did you discuss?
 
