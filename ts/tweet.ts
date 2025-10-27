@@ -52,6 +52,7 @@ class Tweet {
         //TODO: parse the distance from the text of the tweet
         let splitted = this.text.split(" ");
         let dist = parseFloat(splitted[3]);
+        if (!dist) {return 0;}
         if (splitted[4] == "km") {
             dist = dist / 1.609;
         }
