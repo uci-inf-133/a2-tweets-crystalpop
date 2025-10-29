@@ -8,6 +8,13 @@ function parseTweets(runkeeper_tweets) {
 	tweet_array = runkeeper_tweets.map(function(tweet) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
+	console.log(tweet_array);
+
+	let graph_data = []
+
+	for (twt of twt_array) {
+		graph_data.push({"activity": twt.activityType, "distance": twt.distance, "day":twt.time.getDay()})
+	}
 
 	let activity_types = {};
 	for (twt of tweet_array) {
@@ -47,18 +54,52 @@ function parseTweets(runkeeper_tweets) {
 	document.getElementById("longestActivityType").innerText = longest[0];
 	document.getElementById("shortestActivityType").innerText = shortest[0];
 	
+	const activity_graph = activity_entries.map(([activity, values]) => ({activity, frequency: values[0], distance: values[1]}));
+	activity_graph.sort((a, b) => b.frequency - a.frequency);
+	console.log(activity_graph);
 
+	
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
 
-// 	activity_vis_spec = {
-// 	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-// 	  "description": "A graph of the number of Tweets containing each type of activity.",
-// 	  "data": {
-// 	    "values": tweet_array
-// 	  }
-// 	  //TODO: Add mark and encoding
-// 	};
-// 	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
+	activity_vis_spec = {
+	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+	  "description": "A graph of the number of Tweets containing each type of activity.",
+	  "data": {
+	    "values": activity_graph
+	  },
+	  "mark": "bar",
+	  "encoding": {
+		"x": {
+			"field": "activity",
+			"type": "nominal"
+		},
+		"y": {
+			"field": "frequency",
+			"type": "quantitative"
+		},
+		"tooltip": [
+			{"field": "activity", "title": "Activity"},
+			{"field": "frequency", "title": "Frequency"}
+		]
+	  }
+	};
+	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
+
+	days_vis_spec = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "A graph of the distances by day of the week for the three most popular activities.",
+		"data":  {
+			"values": activity_graph.slice(0,3)
+		},
+		"mark": {"type": "bar", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3 },
+		"encoding": {
+			"x": {"timeUnit": "day", "field": "date", "type": "ordinal"},
+			"y": {"field": "distance"},
+			"color": {"field": "activity"}
+		}
+	}
+
+	
 
 // 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 // 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
