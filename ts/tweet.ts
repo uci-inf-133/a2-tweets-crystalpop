@@ -29,8 +29,12 @@ class Tweet {
         if(!this.written) {
             return "";
         }
+        let new_text = this.text.replace("#Runkeeper", '');
+        new_text = this.text.replace(/(?:https?):\/\/[\n\S]+/g, '');
+        new_text = this.text.replace("Just completed a", '');
+        new_text = this.text.replace("Just posted a" , '');
         //TODO: parse the written text from the tweet
-        return "";
+        return new_text;
     }
 
     get activityType():string {
@@ -61,6 +65,7 @@ class Tweet {
 
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
-        return "<tr></tr>";
+        let url = this.text.match(/(?:https?):\/\/[\n\S]+/g);
+        return '<tr><td>${rowNumber}</td><td>${this.activiyType}</td><td><a href="{url}"</a></td></tr>';
     }
 }

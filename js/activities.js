@@ -42,24 +42,13 @@ function parseTweets(runkeeper_tweets) {
 
 
 	console.log(activity_entries);
-	let longest = activity_entries[0];
-	let shortest = activity_entries[2];
-	for (let i = 0; i<3; i++) {
-		if (activity_entries[i][1][1] > longest[1][1]) {
-			longest = activity_entries[i];
-		}
-		if (activity_entries[i][1][1] < shortest[1][1]) {
-			shortest = activity_entries[i];
-		}
-	}
-	document.getElementById("longestActivityType").innerText = longest[0];
-	document.getElementById("shortestActivityType").innerText = shortest[0];
+
 	
 	const activity_graph = activity_entries.map(([activity, values]) => ({activity, frequency: values[0], distance: values[1]}));
 	activity_graph.sort((a, b) => b.frequency - a.frequency);
 	console.log(activity_graph);
 
-	const filtered_data = graph_data.filter(d => (d.activity == activity_entries[0][0]) || (d.activity == activity_entries[1][0]) || (d.activity==activity_entries[2][0]));
+	const filtered_top_three = graph_data.filter(d => (d.activity == activity_entries[0][0]) || (d.activity == activity_entries[1][0]) || (d.activity==activity_entries[2][0]));
 	// console.log(filtered_data);
 	
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
@@ -94,9 +83,9 @@ function parseTweets(runkeeper_tweets) {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"description": "A graph of the distances by day of the week for the three most popular activities.",
 		"data":  {
-			"values": filtered_data
+			"values": filtered_top_three
 		},
-		"mark": {"type": "bar", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3 },
+		"mark": {"type": "point", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3 },
 		"encoding": {
 			"x": {"field": "day", "type": "ordinal", "title": "Day of the week",
 				"sort": [0,1,2,3,4,5,6],
@@ -117,10 +106,46 @@ function parseTweets(runkeeper_tweets) {
 	vegaEmbed('#distanceVis', distance_vis_spec, {actions: false});
 
 	dist_agg_vis_spec = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"description": "A graph of the mean distances by day of the week for the most popular activities.",
+		"data": {"values": filtered_top_three},
+		"mark": {"type": "point", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3 },
+		"encoding": {
+			"x": {
+				"field": "day", "type": "ordinal", "title": "Day of the week",
+				"sort": [0,1,2,3,4,5,6],
+				"axis": {
+					labelExpr: "['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][datum.value]"
+				} 
+			},
+			"y": {
+				"aggregate": "mean",
+				"field": "distance",
+				"type": "quantitative",
+				"title": "Mean Distance"
+			},
+		"color": { "field": "activity", "type": "nominal", "title": "Activity" },
+        "tooltip": [
+            { "field": "activity" },
+            { "field": "day" },
+            { "aggregate": "mean", "field": "distance", "title": "Mean Distance" }
+          ]
+		}
+	};
 
-	}
+	document.getElementById("longestActivityType").innerText = "bike";
+	document.getElementById("shortestActivityType").innerText = "walk";
+	document.getElementById("weekdayOrWeekendLonger").innerText = "weekends";
 
-	vegaEmbed('#distanceVisAggregated', dist_agg_vis_spec, {actions: false});
+	let show_agg = false;
+
+      document.getElementById("aggregate").addEventListener("click", () => {
+		console.log("CLICKED");
+        show_agg = !show_agg;
+        document.getElementById("aggregate").textContent = show_agg ? "Show all activities" : "Show means";
+        let spec = show_agg ? dist_agg_vis_spec : distance_vis_spec;
+        vegaEmbed("#distanceVis", spec, { actions: false });
+      });
 
 	
 

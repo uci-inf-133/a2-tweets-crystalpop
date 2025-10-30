@@ -15,7 +15,8 @@
     Date formatting: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString
     Removing text from a string: https://www.geeksforgeeks.org/javascript/how-to-remove-text-from-a-string-in-javascript/
     Remove URL from a string: https://stackoverflow.com/questions/23571013/how-to-remove-url-from-a-string-completely-in-javascript
-    
+    Prompted ChatGPT for help with toggling logic on the button for the graphs.
+    Tables on the DOM: https://www.w3schools.com/jsref/dom_obj_table.asp
 
 4. What classmates or other individuals did you consult as part of this assignment? What did you discuss?
 
