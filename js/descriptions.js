@@ -18,7 +18,10 @@ function addEventHandlerForSearch() {
 	//TODO: Search the written tweets as text is entered into the search box, and add them to the table
 	document.getElementById("textFilter").addEventListener("input", function () {
 		let prompt = document.getElementById("textFilter").value.trim().toLowerCase();
-		document.getElementById("tweetTable").innerHTML = "";
+		let table = document.getElementById("tweetTable");
+		let search_count = document.getElementById("searchCount");
+		let search_text = document.getElementById("searchText");
+		table.innerHTML = "";
 
 		let filtered_tweets = []
 		if (prompt) {
@@ -28,11 +31,11 @@ function addEventHandlerForSearch() {
 
 
 		filtered_tweets.forEach((twt, i) => {
-			document.getElementById("tweetTable").innerHTML += twt.getHTMLTableRow(i + 1);
+			table.innerHTML += twt.getHTMLTableRow(i + 1);
 		});
 
-		document.getElementById("searchCount").textContent = filtered_tweets.length.toString();
-		document.getElementById("searchText").textContent = prompt;
+		search_count.textContent = filtered_tweets.length.toString();
+		search_text.textContent = prompt;
 	})
 
 	
