@@ -17,28 +17,27 @@ function parseTweets(runkeeper_tweets) {
 function addEventHandlerForSearch() {
 	//TODO: Search the written tweets as text is entered into the search box, and add them to the table
 	document.getElementById("textFilter").addEventListener("input", function () {
-		let prompt = document.getElementById("textFilter").value.trim().toLowerCase();
-		let table = document.getElementById("tweetTable");
-		let search_count = document.getElementById("searchCount");
-		let search_text = document.getElementById("searchText");
-		table.innerHTML = "";
+		const prompt = document.getElementById("textFilter").value.toLowerCase();
+		const table = document.getElementById("tweetTable");
+		const search_count = document.getElementById("searchCount");
+		document.getElementById("searchText").textContent = prompt;
 
 		let filtered_tweets = []
+
 		if (prompt) {
-		filtered_tweets = written_tweets.filter(twt => twt.writtenText.toLowerCase().includes(prompt));
-		console.log(filtered_tweets);
+			filtered_tweets = written_tweets.filter(twt => twt.writtenText.toLowerCase().includes(prompt));
 		}
 
+		table.innerHTML = "";
+
+		search_count.textContent = filtered_tweets.length;
 
 		filtered_tweets.forEach((twt, i) => {
-			table.innerHTML += twt.getHTMLTableRow(i + 1);
+			let new_row = document.createElement("tr");
+			new_row.innerHTML = twt.getHTMLTableRow(i + 1);
+			table.appendChild(new_row);
 		});
-
-		search_count.textContent = filtered_tweets.length.toString();
-		search_text.textContent = prompt;
 	})
-
-	
 }
 
 //Wait for the DOM to load

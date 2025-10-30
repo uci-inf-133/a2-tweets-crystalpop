@@ -8,48 +8,41 @@ function parseTweets(runkeeper_tweets) {
 	tweet_array = runkeeper_tweets.map(function(tweet) {
 		return new Tweet(tweet.text, tweet.created_at);
 	});
-	console.log(tweet_array);
 
 	let graph_data = [];
 
 	for (twt of tweet_array) {
 		graph_data.push({"activity": twt.activityType, "distance": twt.distance, "day":twt.time.getDay()})
 	}
-	console.log(graph_data);
 
 	let activity_types = {};
 	for (twt of tweet_array) {
 		if (twt.activityType != "unknown") {
 			if (!(twt.activityType in activity_types)) {
-				activity_types[twt.activityType] = [1, twt.distance];
+				activity_types[twt.activityType] = 1;
 			}
 			else {
-				activity_types[twt.activityType][0] += 1;
-				activity_types[twt.activityType][1] += twt.distance;
+				activity_types[twt.activityType] += 1;
 			}
 		}
 	}
 
 	let activity_entries = Object.entries(activity_types);
+	console.log(activity_entries);
 
-	console.log(activity_types);
 	document.getElementById("numberActivities").innerText = Object.keys(activity_types).length;
 
-	activity_entries.sort((a, b) => b[1][0] - a[1][0]);
+	activity_entries.sort((a, b) => b[1] - a[1]);
 	document.getElementById("firstMost").innerText = activity_entries[0][0];
 	document.getElementById("secondMost").innerText = activity_entries[1][0];
 	document.getElementById("thirdMost").innerText = activity_entries[2][0];
 
-
-	console.log(activity_entries);
-
 	
-	const activity_graph = activity_entries.map(([activity, values]) => ({activity, frequency: values[0], distance: values[1]}));
+	const activity_graph = activity_entries.map(([activity, freq]) => ({activity, frequency: freq}));
 	activity_graph.sort((a, b) => b.frequency - a.frequency);
 	console.log(activity_graph);
 
 	const filtered_top_three = graph_data.filter(d => (d.activity == activity_entries[0][0]) || (d.activity == activity_entries[1][0]) || (d.activity==activity_entries[2][0]));
-	// console.log(filtered_data);
 	
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
 
@@ -139,13 +132,13 @@ function parseTweets(runkeeper_tweets) {
 
 	let show_agg = false;
 
-      document.getElementById("aggregate").addEventListener("click", () => {
+    document.getElementById("aggregate").addEventListener("click", () => {
 		console.log("CLICKED");
         show_agg = !show_agg;
         document.getElementById("aggregate").textContent = show_agg ? "Show all activities" : "Show means";
         let spec = show_agg ? dist_agg_vis_spec : distance_vis_spec;
         vegaEmbed("#distanceVis", spec, { actions: false });
-      });
+    });
 
 	
 

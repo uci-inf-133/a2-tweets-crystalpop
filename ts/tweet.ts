@@ -19,10 +19,7 @@ class Tweet {
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
         //TODO: identify whether the tweet is written
-        if (this.text.includes(" - ")) {
-            return true;
-        };
-        return false;
+        return this.text.includes(" - ");
     }
 
     get writtenText():string {
@@ -33,7 +30,7 @@ class Tweet {
         new_text = new_text.replace("#Runkeeper", '');
         new_text = new_text.replace(/(?:https?):\/\/[\n\S]+/g, '');
         //TODO: parse the written text from the tweet
-        return new_text;
+        return new_text.trim();
     }
 
     get activityType():string {
@@ -65,6 +62,10 @@ class Tweet {
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
         let url = this.text.match(/(?:https?):\/\/[\n\S]+/g);
-        return `<tr><td>${rowNumber}</td><td>${this.activityType}</td><td><a href="{url}">${this.writtenText}"</a></td></tr>`;
+        return `
+                <td>${rowNumber}</td>
+                <td>${this.activityType}</td>
+                <td><a href="{url}">${this.text}"</a></td>
+                `;
     }
 }
