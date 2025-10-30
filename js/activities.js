@@ -10,11 +10,12 @@ function parseTweets(runkeeper_tweets) {
 	});
 	console.log(tweet_array);
 
-	let graph_data = []
+	let graph_data = [];
 
-	for (twt of twt_array) {
+	for (twt of tweet_array) {
 		graph_data.push({"activity": twt.activityType, "distance": twt.distance, "day":twt.time.getDay()})
 	}
+	console.log(graph_data);
 
 	let activity_types = {};
 	for (twt of tweet_array) {
@@ -58,6 +59,8 @@ function parseTweets(runkeeper_tweets) {
 	activity_graph.sort((a, b) => b.frequency - a.frequency);
 	console.log(activity_graph);
 
+	const filtered_data = graph_data.filter(d => (d.activity == activity_entries[0][0]) || (d.activity == activity_entries[1][0]) || (d.activity==activity_entries[2][0]));
+	// console.log(filtered_data);
 	
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
 
@@ -67,15 +70,17 @@ function parseTweets(runkeeper_tweets) {
 	  "data": {
 	    "values": activity_graph
 	  },
-	  "mark": "bar",
+	  "mark": {"type": "bar", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3},
 	  "encoding": {
 		"x": {
 			"field": "activity",
-			"type": "nominal"
+			"type": "nominal",
+			"title": "Activity"
 		},
 		"y": {
 			"field": "frequency",
-			"type": "quantitative"
+			"type": "quantitative",
+			"title": "Frequency"
 		},
 		"tooltip": [
 			{"field": "activity", "title": "Activity"},
@@ -85,19 +90,37 @@ function parseTweets(runkeeper_tweets) {
 	};
 	vegaEmbed('#activityVis', activity_vis_spec, {actions:false});
 
-	days_vis_spec = {
+	distance_vis_spec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"description": "A graph of the distances by day of the week for the three most popular activities.",
 		"data":  {
-			"values": activity_graph.slice(0,3)
+			"values": filtered_data
 		},
 		"mark": {"type": "bar", "cornerRadiusTopLeft": 3, "cornerRadiusTopRight": 3 },
 		"encoding": {
-			"x": {"timeUnit": "day", "field": "date", "type": "ordinal"},
-			"y": {"field": "distance"},
-			"color": {"field": "activity"}
+			"x": {"field": "day", "type": "ordinal", "title": "Day of the week",
+				"sort": [0,1,2,3,4,5,6],
+				"axis": {
+					labelExpr: "['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][datum.value]"
+				}
+			},
+			"y": {"field": "distance", "type": "quantitative", "title": "Distance"},
+			"color": {"field": "activity", "title": "Activity"},
+			"tooltip": [
+				{"field": "activity"},
+				{"field": "day"},
+				{"field": "distance"}
+			]
 		}
+	};
+
+	vegaEmbed('#distanceVis', distance_vis_spec, {actions: false});
+
+	dist_agg_vis_spec = {
+
 	}
+
+	vegaEmbed('#distanceVisAggregated', dist_agg_vis_spec, {actions: false});
 
 	
 
